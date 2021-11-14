@@ -2,7 +2,7 @@
 
 The best multi purpose discord bot. Add Sypher right now
 
-[Invite Me](https://discord.com/oauth2/authorize?client_id=753605471650316379&permissions=2147483639&scope=bot) | [Join Server](https://discord.gg/tgPtCMVZuu) | [Website](https://www.sypherbot.in/)
+[Invite Me](https://discord.com/oauth2/authorize?client_id=753605471650316379&permissions=4294967287&scope=bot%20applications.commands) | [Join Server](https://discord.gg/tgPtCMVZuu) | [Website](https://sypherbot.in/)
 
 [![DiscordBanner](https://invidget.switchblade.xyz/tgPtCMVZuu)](https://discord.gg/tgPtCMVZuu)
 
