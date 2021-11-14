@@ -10,7 +10,6 @@ The best multi purpose discord bot. Add Sypher right now
 
 ### General:
 
-
 | **Name** | **Description** | **Usage** | **Example** | **Aliases**
 |----|----|----|----|----|
 | Prefix | To change the server prefix | `;prefix [new prefix]`	| ;prefix $ |	nil
@@ -38,8 +37,6 @@ The best multi purpose discord bot. Add Sypher right now
 
 ### Moderation:
 
-**With all the features to moderate your server**
-
 | Name | Description | Usage | Example | Aliases
 |----|----|----|----|----|
 | Clean	| To delete previous messages	| `;clean [limit]`	| ;clean 2	| ;del
@@ -60,7 +57,6 @@ The best multi purpose discord bot. Add Sypher right now
 | Unlock	| To unlock a particular channel	| `;unlock`	| ;unlock	| nil
 
 ### Fun: 
-
 
 | Name | Description | Usage | Example | Aliases 
 |----|----|----|----|----|
@@ -87,7 +83,6 @@ The best multi purpose discord bot. Add Sypher right now
 | Chat	| To interact with me	| `;chat [text]`	| ;chat hey how are you	| ;s & ;speak
 
 ### Audio:
-
 
 | Name | Description | Usage | Example | Aliases 
 |----|----|----|----|----|
