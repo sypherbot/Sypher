@@ -1,0 +1,13 @@
+asyncio
+discord
+aiofiles
+aiomysql
+Pillow
+psutil
+filetype
+aiohttp
+ksoftapi
+html5lib
+beautifulsoup4
+PyMySQL
+dislash.py
