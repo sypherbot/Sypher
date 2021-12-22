@@ -14,6 +14,7 @@ import aiomysql
 import discord
 from discord.ext import commands
 
+
 start_time= datetime.datetime.utcnow()
 
 
@@ -26,7 +27,6 @@ ENV_COLOUR=env['COLOUR']
 TOKEN=env['TOKEN']
 KSOFT_TOKEN=env['ksoft']
 WA_TOKEN=env['wa']
-ERROR_CHANNEL_ID=int(env['error_channel'])
 CROSS_EMOJI="<:sypher_cross:833930332604465181>"
 TICK_EMOJI="<:sypher_tick:833930333434019882>"
 ROLL_EMOJI="<a:rolling:909092152062124122>"
@@ -66,6 +66,22 @@ UTILITIES_EMOJI='<:utilities:920557130065514506>'
 INVISIBLE_EMOJI='<:invisible:921036945973461012>'
 X_EMOJI='<:x_:921251869307830292>'
 O_EMOJI='<:o_:921251869014249553>'
+EMPTY_EMOJI='<:empty:922046563105263636>'
+RED_EMOJI='<:red:922046561884721162>'
+YELLOW_EMOJI='<:yellow:922046561763090462>'
+ONE_EMOJI='<:one:922056199053131796>'
+TWO_EMOJI='<:two:922057775159316480>'
+THREE_EMOJI='<:three:922057775314518016>'
+FOUR_EMOJI='<:four:922057776719609866>'
+FIVE_EMOJI='<:five:922057775981428736>'
+SIX_EMOJI='<:six:922057776019177492>'
+SEVEN_EMOJI='<:seven:922057775893348372>'
+RED_ICON_EMOJI='<:red_icon:922046562203476058>'
+YELLOW_ICON_EMOJI='<:yellow_icon:922046561909899265>'
+LEFT_END='<:left_end:922335926976397322>'
+RIGHT_END='<:right_end:922335929987907594>'
+MIDDLE_END='<:middle_end:922335926489858068>'
+
 
 
 
@@ -872,6 +888,63 @@ def tttCheckWin(m, xo):
 def tttCheckDraw(board):
     return not " " in board
 
+
+ROW_COUNT = 6
+COLUMN_COUNT = 7
+
+
+def create_board():
+    board = [[EMPTY_EMOJI for num in range(COLUMN_COUNT)] for num in range(ROW_COUNT)]
+    return board
+
+
+def drop_piece(board, row, col, piece):
+    board[row][col] = piece
+    return board
+
+
+def is_valid_location(board, col):
+    return board[ROW_COUNT - 1][col] == EMPTY_EMOJI
+
+def is_tie(board):
+    if not board[ROW_COUNT - 1][0] == EMPTY_EMOJI and not board[ROW_COUNT - 1][1] == EMPTY_EMOJI and not board[ROW_COUNT - 1][2] == EMPTY_EMOJI and not board[ROW_COUNT - 1][3] == EMPTY_EMOJI and not board[ROW_COUNT - 1][4] == EMPTY_EMOJI and not board[ROW_COUNT - 1][5] == EMPTY_EMOJI and not board[ROW_COUNT - 1][6] == EMPTY_EMOJI:
+        return True
+    else:
+        return False
+
+def get_next_open_row(board, col):
+    for r in range(ROW_COUNT):
+        if board[r][col] == EMPTY_EMOJI:
+            return r
+
+
+
+
+
+def winning_move(board, piece,col,row):
+    # Check horizontal locations for win
+    for c in range(COLUMN_COUNT - 3):
+        if board[row][c] == piece and board[row][c + 1] == piece and board[row][c + 2] == piece and board[row][c + 3] == piece:
+            return True
+
+    # Check vertical locations for win
+
+    for r in range(ROW_COUNT - 3):
+        if board[r][col] == piece and board[r + 1][col] == piece and board[r + 2][col] == piece and board[r + 3][col] == piece:
+            return True
+    for c in range(COLUMN_COUNT - 3):
+        for r in range(ROW_COUNT):
+            if r<ROW_COUNT - 3:
+                # Check positively sloped diaganols
+                if board[r][c] == piece and board[r + 1][c + 1] == piece and board[r + 2][c + 2] == piece and board[r + 3][
+                    c + 3] == piece:
+                    return True
+            if r>=3:
+                # Check negatively sloped diaganols
+                if board[r][c] == piece and board[r - 1][c + 1] == piece and board[r - 2][c + 2] == piece and \
+                        board[r - 3][
+                            c + 3] == piece:
+                    return True
 
 
 

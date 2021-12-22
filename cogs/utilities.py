@@ -499,12 +499,16 @@ class Utilities(commands.Cog):
             msg=await ctx.send(embed=embed,components=[row_of_buttons])
 
             def check(inter):
-                if inter.message.id == msg.id and inter.author.id == ctx.author.id:
+                if inter.message.id == msg.id:
                     return True
 
             while True:
                 try:
                     inter = await ctx.wait_for_button_click(check, timeout=60.0)
+                    if not inter.author.id == ctx.author.id:
+                        prefix=await utils.fetch_prefix(ctx.guild.id)
+                        await inter.reply(ephemeral=True, content=f"Use `{prefix}help`")
+                        continue
                     await inter.reply(type=7)
                     cog_name= inter.clicked_button.custom_id
                     cog=self.bot.get_cog(cog_name)

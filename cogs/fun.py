@@ -516,6 +516,112 @@ class Fun(commands.Cog):
                     components=[row1, row2, row3, row4, row5])
                 return
 
+    @commands.command(description='Play connect4 with an opponent', usage='connect4 {member}')
+    async def connect4(self, ctx,member:Union[discord.Member,int,str] = None):
+        member = await utils.extract_member(ctx, member)
+        if not member:
+            embed = discord.Embed(colour=ENV_COLOUR,
+                                  description=f"{utils.CROSS_EMOJI} Please mention a valid member")
+            await ctx.send(embed=embed)
+            return
+        if member == ctx.author:
+            embed = discord.Embed(colour=ENV_COLOUR,
+                                  description=f"{utils.CROSS_EMOJI} You cannot play against yourself")
+            await ctx.send(embed=embed)
+            return
+        if member.bot:
+            embed = discord.Embed(colour=ENV_COLOUR,
+                                  description=f"{utils.CROSS_EMOJI} You cannot play against a bot")
+            await ctx.send(embed=embed)
+            return
+        button_dict={'1': {'type': 2, 'style': ButtonStyle.blurple, 'label': '1','custom_id':'1'},
+                     '2': {'type': 2, 'style': ButtonStyle.blurple, 'label': '2','custom_id':'2'},
+                     '3': {'type': 2, 'style': ButtonStyle.blurple, 'label': '3','custom_id':'3'},
+                     '4': {'type': 2, 'style': ButtonStyle.blurple, 'label': '4','custom_id':'4'},
+                     '5': {'type': 2, 'style': ButtonStyle.blurple, 'label': '5','custom_id':'5'},
+                     '6': {'type': 2, 'style': ButtonStyle.blurple, 'label': '6','custom_id':'6'},
+                     '7': {'type': 2, 'style': ButtonStyle.blurple, 'label': '7','custom_id':'7'}}
+        row1 = ActionRow().from_dict({"components": [button_dict['1'],button_dict['2'],button_dict['3'],button_dict['4']]})
+        row2 = ActionRow().from_dict(
+            {"components": [button_dict['5'], button_dict['6'], button_dict['7']]})
+
+        first = random.choice([ctx.author, member])
+        second_list = [ctx.author, member]
+        second_list.remove(first)
+        second = second_list[0]
+        pieces= {first.id: utils.RED_EMOJI, second.id: utils.YELLOW_EMOJI}
+        pieces_emoji={first.id: utils.RED_ICON_EMOJI, second.id: utils.YELLOW_ICON_EMOJI}
+        opponent = {ctx.author: member, member: ctx.author}
+        board=utils.create_board()
+        pallette=f"{board[5][0]}{board[5][1]}{board[5][2]}{board[5][3]}{board[5][4]}{board[5][5]}{board[5][6]}\n" \
+                 f"{board[4][0]}{board[4][1]}{board[4][2]}{board[4][3]}{board[4][4]}{board[4][5]}{board[4][6]}\n" \
+                 f"{board[3][0]}{board[3][1]}{board[3][2]}{board[3][3]}{board[3][4]}{board[3][5]}{board[3][6]}\n" \
+                 f"{board[2][0]}{board[2][1]}{board[2][2]}{board[2][3]}{board[2][4]}{board[2][5]}{board[2][6]}\n" \
+                 f"{board[1][0]}{board[1][1]}{board[1][2]}{board[1][3]}{board[1][4]}{board[1][5]}{board[1][6]}\n" \
+                 f"{board[0][0]}{board[0][1]}{board[0][2]}{board[0][3]}{board[0][4]}{board[0][5]}{board[0][6]}"
+        player = first
+        first_line=f"{utils.ONE_EMOJI}{utils.TWO_EMOJI}{utils.THREE_EMOJI}{utils.FOUR_EMOJI}{utils.FIVE_EMOJI}{utils.SIX_EMOJI}{utils.SEVEN_EMOJI}"
+        last_line=f"{utils.LEFT_END}{utils.MIDDLE_END}{utils.MIDDLE_END}{utils.MIDDLE_END}{utils.MIDDLE_END}{utils.MIDDLE_END}{utils.RIGHT_END}"
+        response = f"**{ctx.author.name} vs {member.name}**\n\n{player.mention}'s move {pieces_emoji[player.id]}\n\n{first_line}\n{pallette}\n{last_line}"
+        msg = await ctx.send(content=response, components=[row1, row2])
+        def check(inter):
+            if inter.message.id == msg.id:
+                return True
+
+        while True:
+            try:
+                inter = await ctx.wait_for_button_click(check, timeout=60.0)
+                if not inter.author.id == player.id:
+                    if inter.author.id in [ctx.author.id,member.id]:
+                        await inter.reply(ephemeral=True,content="It's not your turn")
+                    else:
+                        await inter.reply(ephemeral=True, content="This is not your game")
+                    continue
+                await inter.reply(type=7)
+                # Send what you received
+                col= int(inter.clicked_button.custom_id)-1
+                row=utils.get_next_open_row(board, col)
+                board=utils.drop_piece(board, row, col, pieces[player.id])
+                won= utils.winning_move(board,pieces[player.id],col,row)
+                pallette = f"{board[5][0]}{board[5][1]}{board[5][2]}{board[5][3]}{board[5][4]}{board[5][5]}{board[5][6]}\n" \
+                           f"{board[4][0]}{board[4][1]}{board[4][2]}{board[4][3]}{board[4][4]}{board[4][5]}{board[4][6]}\n" \
+                           f"{board[3][0]}{board[3][1]}{board[3][2]}{board[3][3]}{board[3][4]}{board[3][5]}{board[3][6]}\n" \
+                           f"{board[2][0]}{board[2][1]}{board[2][2]}{board[2][3]}{board[2][4]}{board[2][5]}{board[2][6]}\n" \
+                           f"{board[1][0]}{board[1][1]}{board[1][2]}{board[1][3]}{board[1][4]}{board[1][5]}{board[1][6]}\n" \
+                           f"{board[0][0]}{board[0][1]}{board[0][2]}{board[0][3]}{board[0][4]}{board[0][5]}{board[0][6]}"
+                if won:
+                    row1.disable_buttons()
+                    row2.disable_buttons()
+                    response = f"**{ctx.author.name} vs {member.name}**\n\n{player.mention} {pieces_emoji[player.id]} | You won 🎉\n\n{first_line}\n{pallette}\n{last_line}"
+                    await msg.edit(components=[row1, row2], content=response)
+                    return
+                tie=utils.is_tie(board)
+                if tie:
+                    row1.disable_buttons()
+                    row2.disable_buttons()
+                    response = f"**{ctx.author.name} vs {member.name}**\n\nIt's a tie\n\n{first_line}\n{pallette}\n{last_line}"
+                    await msg.edit(components=[row1, row2], content=response)
+                    return
+                if row == 5:
+                    button_dict[inter.clicked_button.custom_id]={'type': 2, 'style': ButtonStyle.blurple, 'label': inter.clicked_button.custom_id,'custom_id':inter.clicked_button.custom_id,'disabled':True}
+
+                row1 = ActionRow().from_dict(
+                    {"components": [button_dict['1'], button_dict['2'], button_dict['3'], button_dict['4']]})
+                row2 = ActionRow().from_dict(
+                    {"components": [button_dict['5'], button_dict['6'], button_dict['7']]})
+
+                player = opponent[player]
+                response = f"**{ctx.author.name} vs {member.name}**\n\n{player.mention}'s move {pieces_emoji[player.id]}\n\n{first_line}\n{pallette}\n{last_line}"
+                await msg.edit(content=response, components=[row1, row2])
+            except asyncio.TimeoutError:
+                row1.disable_buttons()
+                row2.disable_buttons()
+                response = f"**{ctx.author.name} vs {member.name}**\n\nTime up ⏰\n\n{first_line}\n{pallette}\n{last_line}"
+                await msg.edit(components=[row1,row2],content=response)
+                return
+
+
+
 
     @commands.command(description='Roast a user', usage='roast [user]')
     @commands.is_nsfw()

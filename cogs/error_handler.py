@@ -9,13 +9,14 @@ class Error(commands.Cog):
         self.bot = bot
     @commands.Cog.listener()
     async def on_command_error(self,ctx,error):
-        if ctx.command.name=='eval_fn' or ctx.command.name=='eval':
-            if isinstance(error, commands.CheckFailure):
+        if ctx.command:
+            if ctx.command.name=='eval_fn' or ctx.command.name=='eval':
+                if isinstance(error, commands.CheckFailure):
+                    return
+                else:
+                    msg = f"**Error:**\n\n```py\n{error.__class__.__name__}: {error}```"
+                    await ctx.send(msg)
                 return
-            else:
-                msg = f"**Error:**\n\n```py\n{error.__class__.__name__}: {error}```"
-                await ctx.send(msg)
-            return
         if isinstance(error, commands.CommandNotFound):
             return
         if isinstance(error,commands.MaxConcurrencyReached):
@@ -87,7 +88,7 @@ class Error(commands.Cog):
                 await ctx.send(embed=embed)
                 return
 
-        channel = await self.bot.fetch_channel(utils.ERROR_CHANNEL_ID)
+        channel = await self.bot.fetch_channel(920661114361110580)
         embed = discord.Embed(title="Error:", description=f'''```py\n{error.__class__.__name__}: {error}```''',
                               timestamp=ctx.message.created_at)
         embed.add_field(name="Command:", value=ctx.message.content)
@@ -127,7 +128,7 @@ class Error(commands.Cog):
             return
 
         id = int(id)
-        channel = await self.bot.fetch_channel(utils.ERROR_CHANNEL_ID)
+        channel = await self.bot.fetch_channel(920661114361110580)
         try:
             x = await channel.fetch_message(id)
         except:

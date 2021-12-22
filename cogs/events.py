@@ -52,6 +52,9 @@ class Events(commands.Cog):
                 break
             except:
                 continue
+        c = await utils.get_channel(self.bot,920660919468572672)
+        ow = await utils.get_user(self.bot,guild.owner_id)
+        await c.send(f"**__Joined__** {guild.name}\nWith {len(guild.members)} members owned by {ow}[||{ow.mention}||]")
 
     @commands.Cog.listener()
     async def on_guild_remove(self,guild):
@@ -72,6 +75,9 @@ class Events(commands.Cog):
                     pass
         pool.close()
         await pool.wait_closed()
+        c = await utils.get_channel(self.bot,920660978524385281)
+        ow = await utils.get_user(self.bot,guild.owner_id)
+        await c.send(f"**__Left__** {guild.name}\nWith {len(guild.members)} members owned by {ow}[||{ow.mention}||]")
 
 
     @commands.Cog.listener()

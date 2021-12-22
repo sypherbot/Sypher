@@ -112,7 +112,7 @@ class admin(commands.Cog):
         ```
         """
         if not cmd:
-            embed = discord.Embed(colour=utils.ENV_COLOUR, description=f'{utils.CROSS_EMOJI} No query provided')
+            embed = discord.Embed(colour=0x6E8DC9, description=f'{utils.CROSS_EMOJI} No query provided')
             await ctx.send(embed=embed)
             return
         if cmd.startswith('```py') and cmd.endswith('```'):
@@ -175,7 +175,7 @@ class admin(commands.Cog):
                 if not result:
                     await ctx.message.add_reaction(f"{utils.TICK_EMOJI}")
                 else:
-                    if not type(result) in [str, int, list, tuple, dict, float]:
+                    if not type(result) in [str, int, list, tuple, dict, float,bool,set,complex,range,frozenset]:
                         msg = msg + f"\n\n**Type:**\n\n```py\n{result.__class__}```"
                     else:
                         msg = msg + f"\n\n**Output:**\n\n```py\n{result}```"
